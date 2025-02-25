@@ -10,17 +10,20 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { BugsService } from './bugs.service';
 import { CreateBugDto } from './dtos/create_bug.dto';
 import { UpdateBugDto } from './dtos/update_bug.dto';
 import { BugStatus } from './enums/bug_status.enum';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('bugs')
 export class BugsController {
   constructor(private readonly bugsService: BugsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() createBugDto: CreateBugDto) {
     return this.bugsService.create(createBugDto);
   }
@@ -40,24 +43,22 @@ export class BugsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateBugDto: UpdateBugDto) {
     return this.bugsService.update(id, updateBugDto);
   }
 
-  @Patch(':id')
-  async updateStatus(@Param('id') id: string, @Body() newStatus: string) {
-    const normalizedStatus = newStatus.toUpperCase();
-    const statusEnum = BugStatus[normalizedStatus as keyof typeof BugStatus];
-    console.log(statusEnum);
-    if (!statusEnum) {
-      console.log('PAS IIC');
-      throw new BadRequestException('Invalid status');
-    }
-
-    return this.bugsService.updateStatus(id, statusEnum);
+  @Patch(':id/status')
+  @UseGuards(JwtAuthGuard)
+  async updateStatus(
+    @Param('id') id: string,
+    @Body('status') status: BugStatus,
+  ) {
+    return this.bugsService.updateStatus(id, status);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.bugsService.remove(id);
   }

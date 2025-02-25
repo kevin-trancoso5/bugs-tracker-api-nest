@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bug } from '../bugs/entities/bug.entity';
 import { Comment } from '../comments/entities/comment.entity';
 import { ConfigModule } from '@nestjs/config';
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { ConfigModule } from '@nestjs/config';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Bug, Comment],
+      entities: [Bug, Comment, User],
       synchronize: false,
     }),
   ],

@@ -100,7 +100,7 @@ describe('BugsController', () => {
   });
 
   it('should update status of a Bug', async () => {
-    const newStatus = 'done';
+    const newStatus = BugStatus.DONE;
     const result = await controller.updateStatus('1', newStatus);
     expect(result).toEqual({
       id: '1',
