@@ -1,11 +1,11 @@
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 config();
 
 const configService = new ConfigService();
 
-const AppDataSource = new DataSource({
+export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   host: configService.get<string>('DB_HOST'),
   port: parseInt(configService.get<string>('DB_PORT') ?? '5432'),
@@ -17,6 +17,7 @@ const AppDataSource = new DataSource({
   migrations: ['src/database/migrations/*-migration.ts'],
   migrationsRun: false,
   logging: true,
-});
+};
 
+const AppDataSource = new DataSource(dataSourceOptions);
 export default AppDataSource;
